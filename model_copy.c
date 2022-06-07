@@ -8,7 +8,7 @@
 int pv = 0;
 char anterior[25]; 
 
-void  parse(char *linea, char **args){
+void  procesamiento_cadena(char *linea, char **args){
 
 	while (*linea != '\0') {       
 		
@@ -22,7 +22,7 @@ void  parse(char *linea, char **args){
 	*args = '\0';                 
 }
 
-void  execute(char **args){
+void  ejecutar(char **args){
 	
 	pid_t  pid;
 	int    status;
@@ -56,8 +56,8 @@ void  main(void) {
 			if(*linea == '!' && *(++linea) == '!'){
 
 				if (pv == 1){
-					parse(anterior,args);
-					execute(args);
+					procesamiento_cadena(anterior,args);
+					ejecutar(args);
 				}
 				else{
 					printf("Sin comandos en el historial\n");
@@ -65,10 +65,10 @@ void  main(void) {
 
 			}else{
 				strcpy(anterior,linea);
-				parse(linea, args);       
+				procesamiento_cadena(linea, args);       
 				if (strcmp(args[0], "exit") == 0)  
 					exit(0);            
-				execute(args);           
+				ejecutar(args);           
 				if(pv==0)pv = 1;
 			}
 		}
