@@ -8,21 +8,21 @@
 int pv = 0;
 char anterior[25]; 
 
-void  parse(char *line, char **argv){
+void  parse(char *linea, char **args){
 
-	while (*line != '\0') {       
+	while (*linea != '\0') {       
 		
-		while (*line == ' ' || *line == '\t' || *line == '\n')
-			*line++ = '\0';     
-		*argv++ = line;          
-		while (*line != '\0' && *line != ' ' && *line != '\t' && *line != '\n') 
-			line++;             
+		while (*linea == ' ' || *linea == '\t' || *linea == '\n')
+			*linea++ = '\0';     
+		*args++ = linea;          
+		while (*linea != '\0' && *linea != ' ' && *linea != '\t' && *linea != '\n') 
+			linea++;             
 	}
 
-	*argv = '\0';                 
+	*args = '\0';                 
 }
 
-void  execute(char **argv){
+void  execute(char **args){
 	
 	pid_t  pid;
 	int    status;
@@ -32,47 +32,49 @@ void  execute(char **argv){
 		exit(1);
 	}
 	else if (pid == 0) {
-		if (execvp(*argv, argv) < 0) {     
+		if (execvp(*args, args) < 0) {     
 			printf("*** ERROR: exec failed\n");
 			exit(1);
 		}
 	}
 	else {                                 
 		while (wait(&status) != pid)   ;
-	} 
+	}
+
 }
 
 void  main(void) {
 
-	char  *line = malloc(25 * sizeof(char));
-	char  *argv[64];              
+	char  *linea = malloc(25 * sizeof(char));
+	char  *args[64];              
 
 	while (1) {
 		printf("osh-> ");     
-		gets(line);          
+		gets(linea);          
 
-		if(*line != ' ' && *line != '\t' && *line != '\n' && *line != '\0'){ 
-			if(*line == '!' && *(++line) == '!'){
+		if(*linea != ' ' && *linea != '\t' && *linea != '\n' && *linea != '\0'){ 
+			if(*linea == '!' && *(++linea) == '!'){
 
 				if (pv == 1){
-					parse(anterior,argv);
-					execute(argv);
+					parse(anterior,args);
+					execute(args);
 				}
 				else{
 					printf("Sin comandos en el historial\n");
 				}
 
 			}else{
-				strcpy(anterior,line);
-				parse(line, argv);       
-				if (strcmp(argv[0], "exit") == 0)  
+				strcpy(anterior,linea);
+				parse(linea, args);       
+				if (strcmp(args[0], "exit") == 0)  
 					exit(0);            
-				execute(argv);           
+				execute(args);           
 				if(pv==0)pv = 1;
 			}
 		}
 
 	}
 	
-     free(line);
+     free(linea);
 }
+
