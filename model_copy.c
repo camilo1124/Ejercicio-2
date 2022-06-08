@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <sys/wait.h>
 
+#define MAX_LINE 80
+
 int pv = 0;
 char anterior[25]; 
 
@@ -45,10 +47,11 @@ void  ejecutar(char **args){
 
 void  main(void) {
 
-	char  *linea = malloc(25 * sizeof(char));
-	char  *args[64];              
+	char  *linea = malloc(((MAX_LINE/2)+1) * sizeof(char));
+	char  *args[MAX_LINE/2+1];              
+	int should_run = 1;
 
-	while (1) {
+	while (should_run) {
 		printf("osh-> ");     
 		gets(linea);          
 
@@ -56,6 +59,8 @@ void  main(void) {
 			if(*linea == '!' && *(++linea) == '!'){
 
 				if (pv == 1){
+					printf("Comando anterior: \n");
+					printf("%s\n",anterior);
 					procesamiento_cadena(anterior,args);
 					ejecutar(args);
 				}
@@ -66,15 +71,16 @@ void  main(void) {
 			}else{
 				strcpy(anterior,linea);
 				procesamiento_cadena(linea, args);       
-				if (strcmp(args[0], "exit") == 0)  
-					exit(0);            
-				ejecutar(args);           
-				if(pv==0)pv = 1;
+				if (strcmp(args[0], "exit") == 0){
+					//free(linea);
+					should_run=0;            
+				} else{
+					ejecutar(args);           
+					if(pv==0)pv = 1;
+				}
 			}
 		}
 
-	}
-	
-     free(linea);
+	} 
 }
 
