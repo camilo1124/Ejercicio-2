@@ -1,4 +1,4 @@
 all:
-	gcc model_copy.c -o programa
+	gcc ejercicio2.c -o programa
 clean:
 	rm programa
